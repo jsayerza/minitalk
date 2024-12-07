@@ -6,12 +6,14 @@
 /*   By: jsayerza <jsayerza@student.42barcelona.fr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 17:30:00 by jsayerza          #+#    #+#             */
-/*   Updated: 2024/12/01 19:36:46 by jsayerza         ###   ########.fr       */
+/*   Updated: 2024/12/06 21:52:14 by jsayerza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINITALK_H
 # define MINITALK_H
+
+# define DELAY 2000
 
 # include <unistd.h>
 # include <stdio.h>
