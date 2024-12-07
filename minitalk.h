@@ -13,7 +13,7 @@
 #ifndef MINITALK_H
 # define MINITALK_H
 
-# define DELAY 2000
+# define DELAY 500
 
 # include <unistd.h>
 # include <stdio.h>

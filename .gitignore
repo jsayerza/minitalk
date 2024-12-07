@@ -5,6 +5,8 @@ sav
 sav/.*
 vscode
 *.json
+client
+server
 
 # Prerequisites
 *.d
