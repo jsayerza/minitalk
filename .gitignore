@@ -1,8 +1,6 @@
 *.swp
 *.txt
 *.pdf
-sav
-sav/.*
 vscode
 *.json
 client

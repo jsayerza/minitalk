@@ -6,61 +6,79 @@
 /*   By: jsayerza <jsayerza@student.42barcelona.fr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 17:40:00 by jsayerza          #+#    #+#             */
-/*   Updated: 2024/12/07 10:10:17 by jsayerza         ###   ########.fr       */
+/*   Updated: 2024/12/06 21:50:11 by jsayerza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void	send_char(pid_t server_pid, char c)
+t_mini	*client_initiate(void)
 {
-	int	ascii_val;
-	int	i;
+	t_mini	*talk;
 
-	ascii_val = (int)c;
-	i = 0;
-	while (i < ascii_val)
+	talk = malloc(sizeof(t_mini));
+	if (!talk)
 	{
-//		ft_printf("i:%d ascii_val:%d c:%c\n", i, ascii_val, c);
-		if (kill(server_pid, SIGUSR1) == -1)
-		{
-			ft_printf("Error: Unable to send SIGUSR1.\n");
-			return ;
-		}
-		usleep(DELAY);
-		i++;
+		ft_putstr("ERROR! malloc fail\n");
+		exit(EXIT_FAILURE);
 	}
-	if (kill(server_pid, SIGUSR2) == -1)
-		ft_printf("Error: Unable to send SIGUSR2.\n");
+	talk->pid_server = 0;
+	talk->pid_client = 0;
+	return (talk);
 }
 
-int	main(int ac, char **av)
+void	client_send(t_mini *talk, char *message)
 {
-	char	*msg;
-	pid_t	server_pid;
+	int	bit_displacement;
+	int	i;
+	int	signal;
 
-	if (ac == 3)
+	printf("msg:%s\n", message);
+	i = -1;
+	while (++i <= ft_strlen(message))
 	{
-		server_pid = ft_atoi(av[1]);
-		if (!server_pid)
+		printf("\nmessage[%d]:%c\n", i, message[i]);
+		bit_displacement = -1;
+		signal = 0;
+		while (++bit_displacement < 8)
 		{
-			ft_printf("Error. Incorrect argument: server id.\n");
-			return (1);
+			if ((message[i] >> bit_displacement) & 1)
+			{
+				signal = SIGUSR2;
+			}
+			else
+				signal = SIGUSR1;
+			printf("%d", signal == SIGUSR1? 0: 1);
+			kill(talk->pid_server, signal);
+			usleep(200);
 		}
-		msg = av[2];
-		if (msg[0] == 0)
-		{
-			ft_printf("Error. Incorrect argument: message.\n");
-			return (1);
-		}
-		ft_printf("Message:%s\n", msg);
-		while (*msg)
-			send_char(server_pid, *msg++);
+	}
+	printf("\n");
+	return ;
+}
+
+int	main(int nword, char *arguments[])
+{
+	t_mini	*talk;
+
+	talk = NULL;
+	if (nword != 3)
+	{
+		ft_putstr("ERROR!, Usage: ./client <server PID> <message>\n");
+		exit(EXIT_FAILURE);
 	}
 	else
 	{
-		ft_printf("Error. Incorrect number of arguments.\n");
-		ft_printf("Usage: ./client <PID> <message>");
+		talk = client_initiate();
+		talk->pid_server = ft_atoi(arguments[1]);
+		if (talk->pid_server <= 0)
+		{
+			ft_putstr("ERROR!, Incorrect PID\n");
+			free(talk);
+			exit(EXIT_FAILURE);
+		}
+		client_send(talk, arguments[2]);
 	}
-	return (0);
+	free(talk);
+	return (EXIT_SUCCESS);
 }

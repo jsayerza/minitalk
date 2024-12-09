@@ -1,54 +1,38 @@
-SRCS	= client.c #server.c
-OBJ	:= $(SRCS:%.c=%.o)
-NAME	= minitalk
-CC	= cc
-RM	= rm -f
-CFLAGS	= -Wall -Wextra -Werror -fsanitize=address
-EXE	= client
-PARAMS	= 123 missatxa
+CC				=	 	gcc
+FLAGS			=		-Wextra -Werror -Wall
+RM				=		rm -f
 
-all:	$(NAME)
+NAME_SERVER     =		server
+SERVER_SRC      =       server.c
+SERVER_OBJ      =       $(SERVER_SRC:.c=.o)
 
-%.o:	%.c
-	$(CC) $(FLAGS) -Ilibft -Iftpf -c $? -o $@
+NAME_CLIENT		=		client
+CLIENT_SRC      =       client.c
+CLIENT_OBJ      =       $(CLIENT_SRC:.c=.o)
 
-$(NAME):server client
+UTILS_SRC       =       utils.c
+UTILS_OBJ       =       $(UTILS_SRC:.c=.o)
 
-server:	server.o
-	@make -C libft
-	@make -C ftpf
-	$(CC) $(CFLAGS) $? -Llibft -lft -Lftpf -lftprintf -o server
+all: 		$(NAME_SERVER) $(NAME_CLIENT)
+
+$(NAME_SERVER):	$(SERVER_OBJ) $(UTILS_OBJ)
+	@echo "Preparing $(NAME_SERVER)...:"
+	$(CC) $(FLAGS) $(SERVER_SRC) $(UTILS_SRC) -o $(NAME_SERVER)
+	@echo "$(NAME_SERVER) created :)!"
 	
-client:	client.o
-	@make -C libft
-	@make -C ftpf
-	$(CC) $(CFLAGS) $? -Llibft -lft -Lftpf -lftprintf -o client
+$(NAME_CLIENT):	$(CLIENT_OBJ) $(UTILS_OBJ)
+	@echo "Preparing $(NAME_CLIENT)...:"
+	$(CC) $(FLAGS) $(CLIENT_SRC) $(UTILS_SRC) -o $(NAME_CLIENT)
+	@echo "$(NAME_CLIENT) created :)!"
 	
-libft:	
-	make -C libft
-	
-ftpf:	
-	make -C ftpf
-
 clean:
-	make clean -C libft
-	make clean -C ftpf
-	$(RM) $(OBJ)
+	@echo "Removing files ***.o:"
+	$(RM) $(SERVER_OBJ) $(CLIENT_OBJ) $(UTILS_OBJ)
+	@echo "Done :D!"
+fclean: clean
+	@echo "Removing execute files:"
+	$(RM) $(NAME_SERVER) $(NAME_CLIENT)
+	@echo ":Done :D!"
+re: fclean all
 
-fclean:	clean
-	$(RM) server client
-
-re:	fclean all
-
-run:
-	@if [ -f "$(EXE)" ]; then \
-		clear; \
-		#echo "$(EXE) trobat!"; \
-		./$(EXE) $(PARAMS); \
-	else \
-		echo "$(EXE) no trobat. Run 'make' abans"; \
-	fi
-
-
-.PHONY:	libft ftpf
-
+.PHONY:		all clean fclean re
