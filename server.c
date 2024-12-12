@@ -22,27 +22,19 @@ void	bin_to_char(int signum, char *c)
 
 void	signal_handler(int signum, siginfo_t *info, void *context)
 {
-	static int	client_pid = 0;
 	static int	i = 0;
 	static char	c = 0;
 
 	(void)context;
-	if (client_pid == 0)
-		client_pid = info->si_pid;
 	bin_to_char(signum, &c);
 	if (++i == 8)
 	{
 		i = 0;
 		if (c == 0)
-		{
-			kill(client_pid, SIGUSR1);
-			client_pid = 0;
 			return ;
-		}
 		write(1, &c, 1);
 		c = 0;
 	}
-	kill(client_pid, SIGUSR2);
 }
 
 void	handle_exit(int signum)
@@ -66,7 +58,7 @@ static int	server(void)
 	sigaction(SIGTERM, &exit_action, NULL);
 	sa.sa_sigaction = signal_handler;
 	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART | SA_SIGINFO;
+	sa.sa_flags = SA_RESTART;
 	if (sigaction(SIGUSR1, &sa, NULL) == -1
 		|| sigaction(SIGUSR2, &sa, NULL) == -1)
 	{

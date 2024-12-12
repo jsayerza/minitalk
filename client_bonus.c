@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minitalk.h"
+#include "minitalk_bonus.h"
 
 static int	g_receiver = 0;
 static int	g_byte_index = 0;
@@ -63,15 +63,10 @@ int	char_to_bin(char c, int server_pid)
 static int	client(char *msg, int server_pid)
 {
 	struct sigaction	sa;
-	sigset_t			set;
 
-	sigemptyset(&set);
-	sigaddset(&set, SIGUSR1);
-	sigaddset(&set, SIGUSR2);
-	sigprocmask(SIG_UNBLOCK, &set, NULL);
-	sa.sa_flags = SA_RESTART | SA_SIGINFO;
 	sa.sa_sigaction = signal_handler;
 	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART | SA_SIGINFO;
 	if (sigaction(SIGUSR1, &sa, NULL) == -1
 		|| sigaction(SIGUSR2, &sa, NULL) == -1)
 	{
