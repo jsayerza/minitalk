@@ -12,16 +12,6 @@
 
 #include "minitalk.h"
 
-int	ft_strlen(char *str)
-{
-	int	len;
-
-	len = 0;
-	while (str[len] != '\0')
-		len++;
-	return (len);
-}
-
 int	ft_atoi(const char *str)
 {
 	int	num;
@@ -46,42 +36,16 @@ int	ft_atoi(const char *str)
 	return (neg * num);
 }
 
-void	ft_putstr(char *str)
+void	print_bits(unsigned char octet)
 {
-	if (*str != '\0')
-	{
-		while (*str != '\0')
-		{
-			write(1, str, 1);
-			str++;
-		}
-	}
-}
+	unsigned char	bit;
+	int				i;
 
-void	ft_putnbr(int num)
-{
-	char	c;
-
-	if (num == -2147483648)
-		write(1, "-2147483648", 11);
-	else
+	bit = 0;
+	i = 8;
+	while (i--)
 	{
-		if (num < 0)
-		{
-			write(1, "-", 1);
-			num = -num;
-			ft_putnbr(num);
-		}
-		else if (num < 10)
-		{
-			c = num + '0';
-			write(1, &c, 1);
-		}
-		else
-		{
-			ft_putnbr(num / 10);
-			c = (num % 10) + '0';
-			write(1, &c, 1);
-		}
+		bit = ((octet >> i) & 1) + '0';
+		write(1, &bit, 1);
 	}
 }

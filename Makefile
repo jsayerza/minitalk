@@ -1,38 +1,66 @@
-CC				=	 	gcc
-FLAGS			=		-Wextra -Werror -Wall
-RM				=		rm -f
+CC				=	gcc
+FLAGS			=	-g -Wextra -Werror -Wall #--sanitize=address
+RM				=	rm -f
+INCLUDES		=	-I.
+#NAME_LIB		=	libminitalk.a
 
-NAME_SERVER     =		server
-SERVER_SRC      =       server.c
-SERVER_OBJ      =       $(SERVER_SRC:.c=.o)
+NAME_SERVER     =	server
+SERVER_SRC      =	server.c
+SERVER_OBJ      =	$(SERVER_SRC:.c=.o)
 
-NAME_CLIENT		=		client
-CLIENT_SRC      =       client.c
-CLIENT_OBJ      =       $(CLIENT_SRC:.c=.o)
+NAME_CLIENT		=	client
+CLIENT_SRC      =	client.c
+CLIENT_OBJ      =	$(CLIENT_SRC:.c=.o)
 
-UTILS_SRC       =       utils.c
-UTILS_OBJ       =       $(UTILS_SRC:.c=.o)
+NAME_SERVER_BONUS	=	server_bonus
+SERVER_SRC_BONUS	=	server_bonus.c
+SERVER_OBJ_BONUS	=	$(SERVER_SRC_BONUS:.c=.o)
 
-all: 		$(NAME_SERVER) $(NAME_CLIENT)
+NAME_CLIENT_BONUS	=	client_bonus
+CLIENT_SRC_BONUS	=	client_bonus.c
+CLIENT_OBJ_BONUS	=	$(CLIENT_SRC_BONUS.c=.o)
 
-$(NAME_SERVER):	$(SERVER_OBJ) $(UTILS_OBJ)
-	@echo "Preparing $(NAME_SERVER)...:"
-	$(CC) $(FLAGS) $(SERVER_SRC) $(UTILS_SRC) -o $(NAME_SERVER)
-	@echo "$(NAME_SERVER) created :)!"
+UTILS_SRC       =	utils.c
+UTILS_OBJ       =	$(UTILS_SRC:.c=.o)
+
+FTPF_SRC		=	ftpf/ft_printf.c ftpf/ft_printf_utils.c
+FTPF_OBJ		=	$(FTPF_SRC:.c=.o)
+
+HEADERS			=	minitalk.h
+HEADERS_BONUS	=	minitalk.h
+HEADERS_UTILS	=	ftpf/ft_printf.h
+
+all: 	$(NAME_SERVER) $(NAME_CLIENT)
+
+bonus:	$(NAME_SERVER_BONUS) $(NAME_CLIENT_BONUS)
+
+$(NAME_SERVER):	$(SERVER_OBJ) $(UTILS_OBJ) $(HEADERS) $(HEADERS_UTILS) $(FTPF_OBJ)
+#	$(CC) $(FLAGS) $(SERVER_SRC) $(UTILS_SRC) -o $(NAME_SERVER)
+	$(CC) $(FLAGS) $(SERVER_OBJ) $(UTILS_OBJ) $(FTPF_OBJ) -o $(NAME_SERVER)
 	
-$(NAME_CLIENT):	$(CLIENT_OBJ) $(UTILS_OBJ)
-	@echo "Preparing $(NAME_CLIENT)...:"
-	$(CC) $(FLAGS) $(CLIENT_SRC) $(UTILS_SRC) -o $(NAME_CLIENT)
-	@echo "$(NAME_CLIENT) created :)!"
+$(NAME_CLIENT):	$(CLIENT_OBJ) $(UTILS_OBJ) $(HEADERS) $(HEADERS_UTILS) $(FTPF_OBJ)
+	$(CC) $(FLAGS) $(CLIENT_SRC) $(UTILS_SRC) $(FTPF_OBJ) -o $(NAME_CLIENT)
+
+$(NAME_SERVER_BONUS):	$(SERVER_OBJ_BONUS) $(UTILS_OBJ) $(HEADERS_BONUS) $(HEADERS_UTILS) $(FTPF_OBJ)
+	$(CC) $(FLAGS) $(SERVER_SRC_BONUS) $(UTILS_SRC) -o $(NAME_SERVER_BONUS)
 	
+$(NAME_CLIENT_BONUS):	$(CLIENT_OBJ_BONUS) $(UTILS_OBJ) $(HEADERS_BONUS) $(HEADERS_UTILS) $(FTPF_OBJ)
+	$(CC) $(FLAGS) $(CLIENT_SRC_BONUS) $(UTILS_SRC) -o $(NAME_CLIENT_BONUS)
+
+%.o: %.c Makefile $(HEADERS) $(HEADERS_BONUS) $(HEADERS_UTILS)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
 clean:
-	@echo "Removing files ***.o:"
-	$(RM) $(SERVER_OBJ) $(CLIENT_OBJ) $(UTILS_OBJ)
-	@echo "Done :D!"
-fclean: clean
-	@echo "Removing execute files:"
-	$(RM) $(NAME_SERVER) $(NAME_CLIENT)
-	@echo ":Done :D!"
-re: fclean all
+	make clean -C ftpf
+	$(RM) $(SERVER_OBJ) $(CLIENT_OBJ) $(UTILS_OBJ) $(SERVER_OBJ_BONUS) $(CLIENT_OBJ_BONUS)
 
-.PHONY:		all clean fclean re
+fclean:	clean
+	$(RM) $(NAME_SERVER) $(NAME_CLIENT) $(NAME_SERVER_BONUS) $(NAME_CLIENT_BONUS)
+
+re:		fclean all
+
+.PHONY:	all clean fclean re bonus
+
+
+#valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes ./server
+#valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes ./client

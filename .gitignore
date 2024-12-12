@@ -5,6 +5,8 @@ vscode
 *.json
 client
 server
+client_bonus
+server_bonus
 
 # Prerequisites
 *.d

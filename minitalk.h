@@ -6,31 +6,24 @@
 /*   By: jsayerza <jsayerza@student.42barcelona.fr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 17:30:00 by jsayerza          #+#    #+#             */
-/*   Updated: 2024/12/06 21:52:14 by jsayerza         ###   ########.fr       */
+/*   Updated: 2024/12/10 12:32:36 by jsayerza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINITALK_H
 # define MINITALK_H
+
+# define DELAY 100  //microseconds
+# define WAIT_RESPONSE 50
+
 # include <unistd.h>
-# include <stdlib.h>
 # include <stdio.h>
-# include <sys/types.h>
+# include <stdlib.h>
+# include <stdbool.h>
 # include <signal.h>
+# include "./ftpf/ft_printf.h"
 
-typedef struct s_mini
-{
-	int	pid_server;
-	int	pid_client;
-}	t_mini;
-
-t_mini	*client_start(void);
-t_mini	*server_start(void);
-void	client_send(t_mini *talk, char *message);
-void	server_receive(int signum);
-int		ft_strlen(char *str);
-int		ft_atoi(const char *str);
-void	ft_putstr(char *str);
-void	ft_putnbr(int num);
+int     ft_atoi(const char *str);
+void    print_bits(unsigned char octet);
 
 #endif

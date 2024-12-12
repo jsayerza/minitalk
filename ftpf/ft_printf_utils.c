@@ -6,12 +6,11 @@
 /*   By: jsayerza <jsayerza@student.42barcelona.fr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 10:14:00 by jsayerza          #+#    #+#             */
-/*   Updated: 2024/12/03 19:00:19 by jsayerza         ###   ########.fr       */
+/*   Updated: 2024/12/05 16:29:00 by jsayerza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-//#include "../libft/libft.h"
 
 int	ft_printchar(int c)
 {
@@ -25,7 +24,7 @@ int	ft_printchar(int c)
 
 int	ft_printstr(char const *str)
 {
-	size_t	i;
+	int	i;
 
 	if (str == NULL)
 		return (write(1, "(null)", 6));
@@ -35,7 +34,6 @@ int	ft_printstr(char const *str)
 		while (str[i])
 			i++;
 		return (write(1, str, i));
-//		return (write(1, str, ft_strlen(str)));
 	}
 }
 
